@@ -6,6 +6,7 @@ import {
   View,
   I18nManager,
   Alert,
+  Dimensions,
 } from 'react-native';
 
 import { RectButton } from 'react-native-gesture-handler';
@@ -91,7 +92,8 @@ export default class AppleStyleSwipeableRow extends Component {
     return (
       <Swipeable
         ref={this.updateRef}
-        friction={2}
+        autoOpenThreshold={Dimensions.get('window').width / 2}
+        onAutoOpen={() => console.log('BRUH')}
         enableTrackpadTwoFingerGesture
         leftThreshold={30}
         rightThreshold={40}

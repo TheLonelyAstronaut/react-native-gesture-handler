@@ -171,6 +171,10 @@ export interface SwipeableProps
    * apply `flex: 1`
    */
   childrenContainerStyle?: StyleProp<ViewStyle>;
+
+  autoOpenThreshold?: number;
+
+  onAutoOpen?: () => void;
 }
 
 type SwipeableState = {
@@ -317,6 +321,7 @@ export default class Swipeable extends Component<
       friction,
       leftThreshold = leftWidth / 2,
       rightThreshold = rightWidth / 2,
+      autoOpenThreshold,
     } = this.props;
 
     const startOffsetX = this.currentOffset() + dragX / friction!;
@@ -338,6 +343,14 @@ export default class Swipeable extends Component<
       // swiped to right
       if (translationX < rightThreshold) {
         toValue = -rightWidth;
+      }
+    }
+
+    if (autoOpenThreshold && Math.abs(startOffsetX) > autoOpenThreshold) {
+      if (toValue > 0) {
+        toValue = rowWidth;
+      } else if (toValue < 0) {
+        toValue = -rowWidth;
       }
     }
 
@@ -392,6 +405,10 @@ export default class Swipeable extends Component<
       this.props.onSwipeableWillClose?.();
     } else {
       this.props.onSwipeableWillOpen?.();
+    }
+
+    if (Math.abs(toValue) === this.state.rowWidth) {
+      this.props.onAutoOpen?.();
     }
   };
 
